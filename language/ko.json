@@ -1,0 +1,20 @@
+{
+  "email": "이메일주소",
+  "pw": "비밀번호",
+  "login": "로그인",
+  "findPw": "비밀번호를 잊어버리셨습니까?",
+  "sns": "소셜로그인",
+  "SIGNUP": "회원가입",
+  "Signup": "회원가입",
+  "emailWarning": "ID 규정",
+  "passWarning": "비밀번호 규정",
+  "NicName": "닉네임",
+  "nicWarning": "* 영어, 숫자 혼합 (3-12문자)",
+  "Recommender": "추천인",
+  "recoWarning": "* 필수사항아님",
+  "recommender": "추천인 (닉네임)",
+  "Solo": "솔로",
+  "Group": "그룹",
+  "HallofFame": "명예의전당",
+  "AngelofHonor": "나의 천사"
+}

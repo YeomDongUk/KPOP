@@ -1,0 +1,47 @@
+{
+    "project_info": {
+      "project_number": "521566308405",
+      "firebase_url": "https://idol-89e5e.firebaseio.com",
+      "project_id": "idol-89e5e",
+      "storage_bucket": "idol-89e5e.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:521566308405:android:ffe378a9f47a2729",
+          "android_client_info": {
+            "package_name": "com.miligram.kpop"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "521566308405-dqndoi4mrh3naqn0pkjtlsv67ksmjjg4.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyCkAoabZcReWc0JJHBMFIxMi0ChcLW1bOU"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "521566308405-dqndoi4mrh3naqn0pkjtlsv67ksmjjg4.apps.googleusercontent.com",
+                "client_type": 3
+              },
+              {
+                "client_id": "521566308405-jgim6d1iufpbpfe4hafp1cb9b7t32tel.apps.googleusercontent.com",
+                "client_type": 2,
+                "ios_info": {
+                  "bundle_id": "com.hanbando.kpop"
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
