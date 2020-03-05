@@ -31,32 +31,24 @@ class _SignupPageState extends State<SignupPage> {
     userInform.recomMemberNickname = _recoController.text;
     userInform.registTypeCode = "EMAIL";
     userInform.platformTypeCode = Platform.isAndroid ? "Android" : "IOS";
-    // userInform.p
-
-    print(userInform.toJson());
     var res = await fetch(
       "IF001",
       userInform.toJson(),
     );
-
     var body = jsonDecode(res.body);
-    // print(body["success"]==true);
     var token = body["loginToken"];
     if (body['success'] == true) {
       res = await fetch("IF003", {"loginToken": token});
       body = jsonDecode(res.body);
       if (body['success']) {
-        await tokenSave(token); 
+        await tokenSave(token);
         navigateReplace(context, MainPage(user: body["userInfo"]));
       }
     }
-
-    // return res.statusCode;
   }
 
   bool validateEmail(String eamil) {
-    RegExp regExp =
-        new RegExp(r"(?=.{10,30}$)^[a-zA-Z0-9]+@[a-zA-z0-9]+\.[a-zA-z]+");
+    RegExp regExp = new RegExp(r"(?=.{10,30}$)^[a-zA-Z0-9]+@[a-zA-z0-9]+\.[a-zA-z]+");
     return regExp.hasMatch(eamil);
   }
 
@@ -185,8 +177,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                 ),
                 Inputbox(
-                  hintText:
-                      AppLocalizations.of(context).translate('recommender'),
+                  hintText: AppLocalizations.of(context).translate('recommender'),
                   focusNode: focusNodes[3],
                   controller: _recoController,
                 ),
@@ -209,9 +200,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: Text(
                         AppLocalizations.of(context).translate('SIGNUP'),
                         style: TextStyle(
-                            color: colors["Base"],
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15),
+                            color: colors["Base"], fontWeight: FontWeight.w700, fontSize: 15),
                       ),
                     ),
                   ),

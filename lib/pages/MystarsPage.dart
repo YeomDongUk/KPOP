@@ -14,6 +14,8 @@ import 'package:kpop/Object/app_localizations.dart';
 
 import 'package:kpop/pages/LoginPage/LoginPage.dart';
 
+import 'StarRefillPage.dart';
+
 class MystarsPage extends StatefulWidget {
   @override
   _MystarsPageState createState() => _MystarsPageState();
@@ -43,15 +45,10 @@ class _MystarsPageState extends State<MystarsPage> {
         RewardedVideoAd.instance
             .load(
               adUnitId: RewardedVideoAd.testAdUnitId,
-              // Platform.isAndroid
-              //     ? "ca-app-pub-6851381815350121/5625373412"
-              //     : "ca-app-pub-6851381815350121/3368188810",
               targetingInfo: MobileAdTargetingInfo(
                 keywords: <String>['flutterio', 'beautiful apps'],
                 contentUrl: 'https://flutter.io',
-                // birthday: DateTime.now(),
                 childDirected: false,
-                // designedForFamilies: false,
                 testDevices: <String>[], // Android emulators are considered test devices
               ),
             )
@@ -148,7 +145,7 @@ class _MystarsPageState extends State<MystarsPage> {
             },
           ),
           bottomNavigationBar: Visibility(
-            visible: Platform.isAndroid,
+            // visible: Platform.isAndroid,
             child: Container(
               height: 75,
               child: Flex(
@@ -195,7 +192,7 @@ class _MystarsPageState extends State<MystarsPage> {
                               child: Image.asset("images/icon_star_home_normal.png"),
                             ),
                             Text(
-                              "Star Refill",
+                              "Star Charging",
                               style: TextStyle(
                                 color: colors["White"],
                               ),
@@ -209,9 +206,7 @@ class _MystarsPageState extends State<MystarsPage> {
                           ],
                         ),
                       ),
-                      onTap: () {
-                        print("bye");
-                      },
+                      onTap: () => navigate(context, StarRefillPage()),
                     ),
                   ),
                 ],

@@ -38,9 +38,7 @@ class Inputbox extends StatelessWidget {
             controller: controller,
             focusNode: focusNode,
             maxLines: 1,
-            style: TextStyle(
-              color: Color(0xFF566479),
-            ),
+            style: TextStyle(color: Colors.white),
             initialValue: initValue,
             decoration: InputDecoration(
               border: InputBorder.none,
@@ -51,12 +49,9 @@ class Inputbox extends StatelessWidget {
               hintText: hintText,
               // text
             ),
-            textInputAction: nextFocusNode != null
-                ? TextInputAction.next
-                : TextInputAction.done,
+            textInputAction: nextFocusNode != null ? TextInputAction.next : TextInputAction.done,
             onFieldSubmitted: (value) {
-              if (nextFocusNode != null)
-                FocusScope.of(context).requestFocus(nextFocusNode);
+              if (nextFocusNode != null) FocusScope.of(context).requestFocus(nextFocusNode);
             },
             obscureText: isPassword ?? false,
             keyboardType: keyboardType,

@@ -65,7 +65,7 @@ class _KpopFlutterState extends State<KpopFlutter> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'kpop',
       debugShowCheckedModeBanner: false,
       theme: new ThemeData(

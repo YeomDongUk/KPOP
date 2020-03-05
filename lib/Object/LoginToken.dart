@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 String loginToken;
+
 Future<Null> tokenSave(String tokenValue) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString('loginToken', tokenValue);
