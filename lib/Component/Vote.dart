@@ -4,6 +4,7 @@ import 'package:kpop/Object/Http.dart';
 import 'dart:convert';
 
 import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class Vote extends StatefulWidget {
   final String singerUid;
@@ -49,7 +50,7 @@ class _VoteState extends State<Vote> {
 
   voteStar(context) async {
     var res = await fetch("IF017", {
-      'loginToken': loginToken,
+      'loginToken': Provider.of<LoginToken>(context, listen: false).loginToken,
       'singerUid': widget.singerUid,
       'starCount': int.parse(starController.text)
     });
@@ -95,8 +96,7 @@ class _VoteState extends State<Vote> {
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(3),
-                            topRight: Radius.circular(3)),
+                            topLeft: Radius.circular(3), topRight: Radius.circular(3)),
                         border: Border.all(color: colors["Base"], width: 0.5),
                       ),
                       child: Row(
@@ -154,8 +154,7 @@ class _VoteState extends State<Vote> {
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(3),
-                            bottomRight: Radius.circular(3)),
+                            bottomLeft: Radius.circular(3), bottomRight: Radius.circular(3)),
                         border: Border.all(color: colors["Base"], width: 0.5),
                       ),
                       child: Row(
@@ -193,8 +192,7 @@ class _VoteState extends State<Vote> {
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(3),
                                   ),
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -225,8 +223,7 @@ class _VoteState extends State<Vote> {
                                   borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(3),
                                   ),
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -258,8 +255,7 @@ class _VoteState extends State<Vote> {
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -287,8 +283,7 @@ class _VoteState extends State<Vote> {
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -323,8 +318,7 @@ class _VoteState extends State<Vote> {
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(3),
                                   ),
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -355,8 +349,7 @@ class _VoteState extends State<Vote> {
                                   borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(3),
                                   ),
-                                  border: Border.all(
-                                      color: colors["Base"], width: 0.5),
+                                  border: Border.all(color: colors["Base"], width: 0.5),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Object/LoginToken.dart' as Login;
+import 'package:kpop/Object/LoginToken.dart';
 import 'package:kpop/Object/Navigate.dart';
 import 'package:kpop/pages/LoginPage/LoginPage.dart';
 import 'package:kpop/pages/MainPage.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kpop/Object/Http.dart';
 import 'dart:convert';
@@ -14,12 +16,11 @@ class SplashPage extends StatelessWidget {
   autoLogin(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String tokenValue = prefs.getString('loginToken');
-    Login.loginToken = tokenValue;
+    Provider.of<LoginToken>(context, listen: false).tokenSave(tokenValue);
     print("loginToken:$tokenValue");
     await Future.delayed(const Duration(milliseconds: 1500));
     if (tokenValue != null) {
-      var res = fetch(
-          "IF003", {'loginToken': tokenValue, 'pushToken': Login.pushToken});
+      var res = fetch("IF003", {'loginToken': tokenValue, 'pushToken': Login.pushToken});
       res.then(
         (result) async {
           var body = jsonDecode(result.body);

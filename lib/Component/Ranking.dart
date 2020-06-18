@@ -6,6 +6,7 @@ import 'package:kpop/Component/Vote.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart';
 import 'package:kpop/Object/Reg.dart';
+import 'package:provider/provider.dart';
 
 class Ranking extends StatefulWidget {
   final String singerUid;
@@ -107,8 +108,7 @@ class _RankingState extends State<Ranking> {
                   ),
                   Text(
                     "${widget.starCount.toString().replaceAllMapped(reg, mathFunc)} points",
-                    style: TextStyle(
-                        color: colors["SubText"], fontWeight: FontWeight.w100),
+                    style: TextStyle(color: colors["SubText"], fontWeight: FontWeight.w100),
                   ),
                 ],
               ),
@@ -118,8 +118,7 @@ class _RankingState extends State<Ranking> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       height: 28,
-                      child: Image.asset(
-                          "images/icon_rightarrow_gray_thin_normal.png"),
+                      child: Image.asset("images/icon_rightarrow_gray_thin_normal.png"),
                     ),
                   )
                 : Expanded(
@@ -136,7 +135,8 @@ class _RankingState extends State<Ranking> {
         ),
       ),
       onTap: () async {
-        var res = await fetch("IF015", {'loginToken': loginToken});
+        var res = await fetch(
+            "IF015", {'loginToken': Provider.of<LoginToken>(context, listen: false).loginToken});
         var body = jsonDecode(res.body);
         showDialog(
           context: context,

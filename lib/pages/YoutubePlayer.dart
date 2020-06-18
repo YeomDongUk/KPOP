@@ -26,7 +26,37 @@ class _YoutubePlayState extends State<YoutubePlay> {
   List ytResult = [];
   bool isDisposed = false;
   Map<String, dynamic> videoInfo;
-  callAPI() async {
+
+  @override
+  void initState() {
+    super.initState();
+    ytApi = new YoutubeApi(key: NewPage.getYoutubeKey(context));
+    favorState = widget.favorState;
+    _videoId = widget.json['videoId'];
+    _controller = YoutubePlayerController(
+      initialVideoId: _videoId,
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+        disableDragSeek: false,
+      ),
+    );
+    print(widget.json);
+    callAPI();
+  }
+
+  @override
+  void deactivate() {
+    // _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    isDisposed = true;
+  }
+
+  void callAPI() async {
     print('UI callled');
     var infoReuslt = await ytApi.getVideoInfo(_videoId);
     print("VideoId:${_videoId}");
@@ -49,31 +79,7 @@ class _YoutubePlayState extends State<YoutubePlay> {
     }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    ytApi = new YoutubeApi(key: NewPage.getYoutubeKey(context));
-    favorState = widget.favorState;
-    _videoId = widget.json['videoId'];
-    _controller = YoutubePlayerController(
-      initialVideoId: _videoId,
-      flags: YoutubePlayerFlags(
-        autoPlay: false,
-        disableDragSeek: false,
-      ),
-    );
-    print(widget.json);
-    callAPI();
-  }
-
-  @override
-  void deactivate() {
-    // _controller.pause();
-    super.deactivate();
-  }
-
-  _scrollListner() async {
+  void _scrollListner() async {
     List nextPage = await ytApi.getNextRelatedVideo(_videoId);
     nextPage.forEach((value) {
       ytResult.add(value);
@@ -81,12 +87,6 @@ class _YoutubePlayState extends State<YoutubePlay> {
     if (!isDisposed) {
       setState(() {});
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isDisposed = true;
   }
 
   @override
@@ -107,10 +107,24 @@ class _YoutubePlayState extends State<YoutubePlay> {
           body: Column(
             children: <Widget>[
               YoutubePlayer(
-                  controller: _controller,
-                  showVideoProgressIndicator: true,
-            
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                bottomActions: <Widget>[
+                  SizedBox(width: 14.0),
+                  CurrentPosition(),
+                  SizedBox(width: 8.0),
+                  ProgressBar(
+                    colors: ProgressBarColors(
+                      playedColor: Colors.red,
+                      handleColor: Colors.red,
+                      backgroundColor: Colors.red,
+                    ),
+                    isExpanded: true,
                   ),
+                  RemainingDuration(),
+                  // PlaybackSpeedButton(),
+                ],
+              ),
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -212,8 +226,6 @@ class _YoutubePlayState extends State<YoutubePlay> {
                               await prefs.setStringList('MvFavorite', mvFavorite);
                               setState(() {});
                             }
-                            print("hi");
-                            // print(mvFavorite);
                           },
                         ),
                       ],

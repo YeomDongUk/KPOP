@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Component/Ranking.dart';
 import 'package:kpop/Object/GetList.dart';
+import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class SoloPage extends StatefulWidget {
   final sex;
@@ -10,8 +12,7 @@ class SoloPage extends StatefulWidget {
   _SoloPageState createState() => _SoloPageState();
 }
 
-class _SoloPageState extends State<SoloPage>
-    with AutomaticKeepAliveClientMixin<SoloPage> {
+class _SoloPageState extends State<SoloPage> with AutomaticKeepAliveClientMixin<SoloPage> {
   bool state;
   List<Color> rankingColor = [
     Color(0xAA0E151C),
@@ -27,12 +28,22 @@ class _SoloPageState extends State<SoloPage>
   @override
   void initState() {
     state = true;
-    getList(api: "IF012", typeCode: "I", genderCode: "M").then((list) {
+    getList(
+      api: "IF012",
+      typeCode: "I",
+      genderCode: "M",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
+    ).then((list) {
       setState(() {
         _listBoy = list;
       });
     });
-    getList(api: "IF012", typeCode: "I", genderCode: "F").then((list) {
+    getList(
+      api: "IF012",
+      typeCode: "I",
+      genderCode: "F",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
+    ).then((list) {
       setState(() {
         _listGirl = list;
       });
@@ -44,6 +55,7 @@ class _SoloPageState extends State<SoloPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
 
@@ -53,15 +65,23 @@ class _SoloPageState extends State<SoloPage>
           )
         : RefreshIndicator(
             onRefresh: () async {
-              getList(api: "IF012", typeCode: "I", genderCode: "M")
-                  .then((list) {
+              getList(
+                api: "IF012",
+                typeCode: "I",
+                genderCode: "M",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 if (mounted)
                   setState(() {
                     _listBoy = list;
                   });
               });
-              getList(api: "IF012", typeCode: "I", genderCode: "F")
-                  .then((list) {
+              getList(
+                api: "IF012",
+                typeCode: "I",
+                genderCode: "F",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 if (mounted)
                   setState(() {
                     _listGirl = list;
@@ -77,8 +97,7 @@ class _SoloPageState extends State<SoloPage>
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
-                  itemCount:
-                      widget.sex == 0 ? _listBoy.length : _listGirl.length,
+                  itemCount: widget.sex == 0 ? _listBoy.length : _listGirl.length,
                   itemBuilder: (BuildContext context, int index) {
                     var _list;
                     if (widget.sex == 0)
@@ -93,8 +112,7 @@ class _SoloPageState extends State<SoloPage>
                             width: width,
                             child: FittedBox(
                               fit: BoxFit.cover,
-                              child:
-                                  Image.network(_list[index]['bannerImage']),
+                              child: Image.network(_list[index]['bannerImage']),
                             ),
                           ),
                           Positioned(
@@ -107,9 +125,7 @@ class _SoloPageState extends State<SoloPage>
                               starCount: _list[index]['starCount'],
                               ranking: _list[index]["rank"],
                               name: _list[index]["name"],
-                              color: index < 3
-                                  ? rankingColor[index]
-                                  : rankingColor[3],
+                              color: index < 3 ? rankingColor[index] : rankingColor[3],
                               profileImage: _list[index]['profileImage'],
                               singerUid: _list[index]["uid"].toString(),
                               callback: () async {
@@ -117,6 +133,7 @@ class _SoloPageState extends State<SoloPage>
                                   api: "IF012",
                                   typeCode: "I",
                                   genderCode: widget.sex == 0 ? "M" : "F",
+                                  loginToken: Provider.of<LoginToken>(context).loginToken,
                                 ).then((list) {
                                   setState(() {
                                     if (widget.sex == 0)
@@ -131,9 +148,7 @@ class _SoloPageState extends State<SoloPage>
                         ],
                       );
                     return Ranking(
-                      group: _list[index]["group"] == null
-                          ? ""
-                          : _list[index]["group"]["name"],
+                      group: _list[index]["group"] == null ? "" : _list[index]["group"]["name"],
                       starCount: _list[index]['starCount'],
                       ranking: _list[index]["rank"],
                       name: _list[index]["name"],
@@ -145,6 +160,7 @@ class _SoloPageState extends State<SoloPage>
                           api: "IF012",
                           typeCode: "I",
                           genderCode: widget.sex == 0 ? "M" : "F",
+                          loginToken: Provider.of<LoginToken>(context).loginToken,
                         ).then((list) {
                           setState(() {
                             if (widget.sex == 0)

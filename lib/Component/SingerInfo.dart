@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class SingerInfo extends StatefulWidget {
   final star;
@@ -31,8 +32,10 @@ class _SingerInfoState extends State<SingerInfo> {
   var _listInfoFuture;
 
   callInfo() async {
-    var res = await fetch(
-        "IF027", {"loginToken": loginToken, "singerUid": widget.star['uid']});
+    var res = await fetch("IF027", {
+      "loginToken": Provider.of<LoginToken>(context, listen: false).loginToken,
+      "singerUid": widget.star['uid']
+    });
     var body = jsonDecode(res.body);
     if (body["success"]) {
       if (!isDisposed)
@@ -146,14 +149,11 @@ class _SingerInfoState extends State<SingerInfo> {
                           margin: EdgeInsets.only(left: 5, right: 5),
                           child: Text(
                             widget.star['name'],
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Text(
-                          widget.star["group"] != null
-                              ? widget.star["group"]["name"]
-                              : "",
+                          widget.star["group"] != null ? widget.star["group"]["name"] : "",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

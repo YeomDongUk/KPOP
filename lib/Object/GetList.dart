@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:kpop/Object/Http.dart';
-import 'package:kpop/Object/LoginToken.dart';
 
-dynamic getList({String api, String typeCode, String genderCode}) async {
+dynamic getList({String api, String typeCode, String genderCode, String loginToken}) async {
   final res = await fetch(api, {
     'loginToken': loginToken,
     'typeCode': typeCode,
-    'genderCode': genderCode
+    'genderCode': genderCode,
   });
 
   var body = jsonDecode(res.body);
@@ -23,7 +22,8 @@ dynamic getMonthList(
     String typeCode,
     String genderCode,
     int month,
-    String orderByCode}) async {
+    String orderByCode,
+    String loginToken}) async {
   final res = await fetch(api, {
     'loginToken': loginToken,
     'typeCode': typeCode,

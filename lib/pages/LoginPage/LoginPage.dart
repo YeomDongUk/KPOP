@@ -2,20 +2,20 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:kpop/Component/InputBox.dart';
+import 'package:kpop/Object/LoginToken.dart';
 import 'package:kpop/Object/Navigate.dart';
 import 'package:kpop/Object/app_localizations.dart';
 import 'package:kpop/pages/LoginPage/AdditionalPage.dart';
-import 'package:kpop/pages/LoginPage/InstaLoginPage.dart';
 import 'package:kpop/pages/MainPage.dart';
 import 'package:kpop/pages/LoginPage/SignupPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_line_login/flutter_line_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Object/UserInform.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart' as Login;
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -85,25 +85,44 @@ class _LoginMiddleState extends State<LoginMiddle> {
   final FocusNode pwFoucsNode = FocusNode();
 
   _login(BuildContext context, String id, String pw) async {
-    var res = await fetch(
-      "IF002",
-      {
-        "registTypeCode": "EMAIL",
-        "id": id,
-        "password": pw,
-        "platformTypeCode": "IOS",
-        "pushToken": null
-      },
-    );
-    var body = jsonDecode(res.body);
-    if (body["success"]) {
-      Login.tokenSave(body["loginToken"]);
-      navigateReplace(
-        context,
-        MainPage(
-          user: body["userInfo"],
-        ),
+    try {
+      var res = await fetch(
+        "IF002",
+        {
+          "registTypeCode": "EMAIL",
+          "id": id,
+          "password": pw,
+          "platformTypeCode": "IOS",
+          "pushToken": null
+        },
       );
+      print(res.body);
+      var body = jsonDecode(res.body);
+
+      if (body["success"]) {
+        Provider.of<LoginToken>(context, listen: false).tokenSave(body["loginToken"]);
+
+        navigateReplace(
+          context,
+          MainPage(
+            user: body["userInfo"],
+          ),
+        );
+      } else {
+        showDialog(
+          context: context,
+          child: Dialog(
+            backgroundColor: Colors.black.withOpacity(0),
+            child: Text(
+              "아이디 또는 비밀번호가 일치하지 않습니다.",
+              style: TextStyle(color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -212,7 +231,7 @@ class LoginBottom extends StatelessWidget {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final _flutterLineLogin = new FlutterLineLogin();
+  // final _flutterLineLogin = new FlutterLineLogin();
 
   Future _facebookLogin(context) async {
     final facebookLogin = FacebookLogin();
@@ -233,7 +252,8 @@ class LoginBottom extends StatelessWidget {
         var res = jsonDecode(resultBody.body);
 
         if (res["success"]) {
-          Login.tokenSave(res["loginToken"]);
+          Provider.of<LoginToken>(context, listen: false).tokenSave(res["loginToken"]);
+
           navigateReplace(context, MainPage(user: res["userInfo"]));
         } else {
           var userInform = UserInform(
@@ -272,7 +292,8 @@ class LoginBottom extends StatelessWidget {
       var result = jsonDecode(res.body);
       if (result["success"]) {
         print(result["userInfo"]);
-        Login.tokenSave(result["loginToken"]);
+        Provider.of<LoginToken>(context, listen: false).tokenSave(result["loginToken"]);
+
         navigateReplace(context, MainPage(user: result["userInfo"]));
       } else {
         var userInform = UserInform(
@@ -303,7 +324,8 @@ class LoginBottom extends StatelessWidget {
     var result = jsonDecode(res.body);
     if (result["success"]) {
       print(result["userInfo"]);
-      Login.tokenSave(result["loginToken"]);
+      Provider.of<LoginToken>(context, listen: false).tokenSave(result["loginToken"]);
+
       navigateReplace(context, MainPage(user: result["userInfo"]));
     } else {
       var userInform = UserInform(
@@ -322,48 +344,48 @@ class LoginBottom extends StatelessWidget {
     }
   }
 
-  Future<Null> _lineLogin(context) async {
-    print("good job");
-    try {
-      await _flutterLineLogin.startLogin(
-        (data) async {
-          var res = await fetch("IF002", {
-            'registTypeCode': registTypeCodes[5],
-            'id': data['userID'],
-            'platformTypeCode': "IOS",
-            'pushToken': Login.pushToken
-          });
-          var result = jsonDecode(res.body);
-          if (result["success"]) {
-            // print("reulst÷")
-            print(result["userInfo"]);
-            Login.tokenSave(result["loginToken"]);
-            navigateReplace(context, MainPage(user: result["userInfo"]));
-          } else {
-            print(result["userInfo"]);
-            var userInform = UserInform(
-              registTypeCode: registTypeCodes[5],
-              id: data['userID'],
-              nickname: data['displayName'],
-              profileImage: data['pictureUrl'],
-              platformTypeCode: "IOS",
-            );
-            navigate(
-              context,
-              AdditionalPage(
-                info: userInform,
-              ),
-            );
-          }
-        },
-        () {
-          print("falied");
-        },
-      );
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
+  // Future<Null> _lineLogin(context) async {
+  //   print("good job");
+  //   try {
+  //     await _flutterLineLogin.startLogin(
+  //       (data) async {
+  //         var res = await fetch("IF002", {
+  //           'registTypeCode': registTypeCodes[5],
+  //           'id': data['userID'],
+  //           'platformTypeCode': "IOS",
+  //           'pushToken': Login.pushToken
+  //         });
+  //         var result = jsonDecode(res.body);
+  //         if (result["success"]) {
+  //           // print("reulst÷")
+  //           print(result["userInfo"]);
+  //           Provider.of<LoginToken>(context, listen: false).tokenSave(result["loginToken"]);
+  //           navigateReplace(context, MainPage(user: result["userInfo"]));
+  //         } else {
+  //           print(result["userInfo"]);
+  //           var userInform = UserInform(
+  //             registTypeCode: registTypeCodes[5],
+  //             id: data['userID'],
+  //             nickname: data['displayName'],
+  //             profileImage: data['pictureUrl'],
+  //             platformTypeCode: "IOS",
+  //           );
+  //           navigate(
+  //             context,
+  //             AdditionalPage(
+  //               info: userInform,
+  //             ),
+  //           );
+  //         }
+  //       },
+  //       () {
+  //         print("falied");
+  //       },
+  //     );
+  //   } catch (e) {
+  //     print("Error: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

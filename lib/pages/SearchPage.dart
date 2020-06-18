@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
   final setStar;
@@ -141,8 +142,11 @@ class _SearchPageState extends State<SearchPage> {
                                 ),
                               ),
                               onTap: () async {
-                                var res = await fetch("IF004",
-                                    {'loginToken': loginToken, 'singerName': _nameController.text});
+                                var res = await fetch("IF004", {
+                                  'loginToken':
+                                      Provider.of<LoginToken>(context, listen: false).loginToken,
+                                  'singerName': _nameController.text
+                                });
                                 var body = jsonDecode(res.body);
                                 setState(() {
                                   searchList = body["singer"];

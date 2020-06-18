@@ -1,5 +1,5 @@
 import 'package:kpop/Object/LoginToken.dart';
-
+import 'package:provider/provider.dart';
 import './Object/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:kpop/pages/SplashPage.dart';
 import 'package:kpop/Color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/services.dart';
 
 void main() => runApp(new KpopFlutter());
 
@@ -65,36 +64,34 @@ class _KpopFlutterState extends State<KpopFlutter> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'kpop',
-      debugShowCheckedModeBanner: false,
-      theme: new ThemeData(
-        primaryColor: colors["Base"],
-      ),
-      home: Container(
-        color: Colors.white,
-        child: SplashPage(),
-      ),
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => LoginToken(),
+        )
       ],
-      locale: new Locale("en", "US"),
-      supportedLocales: [
-        const Locale('en', 'US'),
-        const Locale('ko', 'KR'),
-      ],
-      // localeResolutionCallback: (locale, supportedLocales) {
-      //   for (var supportedLocale in supportedLocales) {
-      //     if (supportedLocale.languageCode == locale.languageCode &&
-      //         supportedLocale.countryCode == locale.countryCode) {
-      //       return supportedLocale;
-      //     }
-      //   }
-      //   return supportedLocales.first;
-      // },
+      child: MaterialApp(
+        title: 'kpop',
+        debugShowCheckedModeBanner: false,
+        theme: new ThemeData(
+          primaryColor: colors["Base"],
+        ),
+        home: Container(
+          color: Colors.white,
+          child: SplashPage(),
+        ),
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: new Locale("en", "US"),
+        supportedLocales: [
+          const Locale('en', 'US'),
+          const Locale('ko', 'KR'),
+        ],
+      ),
     );
   }
 }

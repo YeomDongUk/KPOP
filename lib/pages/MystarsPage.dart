@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -13,6 +14,8 @@ import 'package:kpop/Object/RewardState.dart';
 import 'package:kpop/Object/app_localizations.dart';
 
 import 'package:kpop/pages/LoginPage/LoginPage.dart';
+import 'package:kpop/stream/my_star_stream.dart';
+import 'package:provider/provider.dart';
 
 import 'StarRefillPage.dart';
 
@@ -23,15 +26,22 @@ class MystarsPage extends StatefulWidget {
 
 class _MystarsPageState extends State<MystarsPage> {
   var starCount;
+  MyStarStream _myStarStream;
+  Timer _timer;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _myStarStream = MyStarStream();
+    _myStarStream.getMyStar(loginToken: Provider.of<LoginToken>(context, listen: false).loginToken);
+    _timer = Timer.periodic(Duration(seconds: 5), (_) {
+      _myStarStream.getMyStar(
+          loginToken: Provider.of<LoginToken>(context, listen: false).loginToken);
+    });
     RewardedVideoAd.instance.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) async {
       if (event == RewardedVideoAdEvent.rewarded) {
         await fetch("IF026", {
-          'loginToken': loginToken,
+          'loginToken': Provider.of<LoginToken>(context, listen: false).loginToken,
           'typeCode': 'VIDEOAD',
           'starCount': 36,
           'content': '영상 AAD',
@@ -57,7 +67,12 @@ class _MystarsPageState extends State<MystarsPage> {
     };
   }
 
-// "open => start => complete => rewarded => closed"
+  @override
+  void dispose() {
+    _myStarStream.dispose();
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,77 +86,75 @@ class _MystarsPageState extends State<MystarsPage> {
             ),
             centerTitle: false,
           ),
-          body: FutureBuilder(
-            future: fetch("IF016", {"loginToken": loginToken}),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                var body = jsonDecode(snapshot.data.body);
-                int accumStar = 0;
-                for (var index in body["starUsageHistory"]) {
-                  accumStar = accumStar + index["starCount"];
-                }
-                starCount = body["myStarCount"];
-                return Container(
-                  color: colors["Light"],
-                  child: ListView(
-                    physics: const ClampingScrollPhysics(),
-                    children: <Widget>[
-                      GenearMenu(
-                        maintext: AppLocalizations.of(context).translate("MyStars"),
-                        subtext: starCount.toString(),
-                        imgsrc: "images/icon_tip_normal.png",
-                        bar: false,
-                      ),
-                      GenearMenu(
-                        maintext: AppLocalizations.of(context).translate("EverStars"),
-                        subtext: body["everStarCount"].toString(),
-                        imgsrc: null,
-                        bar: false,
-                      ),
-                      GenearMenu(
-                        maintext: AppLocalizations.of(context).translate("DailyStars"),
-                        subtext: body["dailyStarCount"].toString(),
-                        imgsrc: "images/icon_question_blue_normal.png",
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => new InformDialog());
-                          // );
-                        },
-                        bar: false,
-                      ),
-                      GenearMenu(
-                        maintext: AppLocalizations.of(context).translate("MyAccumulatedVotes"),
-                        subtext: accumStar.toString(),
-                        // imgsrc: "images/icon_question_blue_normal.png",
-                        onTap: () => print("hi"),
-                        bar: false,
-                      ),
-                      // GenearMenu(
-                      //   maintext: AppLocalizations.of(context)
-                      //       .translate("Everstarcollectedtoday"),
-                      //   subtext: body["todayEverStarCount"].toString(),
-                      //   imgsrc: "images/icon_question_blue_normal.png",
-                      //   bar: true,
-                      // ),
-                      History(
-                        text: "Star Usage History",
-                        imgSrc: "images/icon_star_52x52_normal.png",
-                        list: body["starUsageHistory"],
-                        accum: false,
-                      ),
-                      History(
-                        text: "Star Accumulation History",
-                        imgSrc: "images/icon_star_52x52_normal.png",
-                        list: body["starEarnHistory"],
-                        accum: true,
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Container();
+          body: StreamBuilder<Map<String, dynamic>>(
+            initialData: {},
+            stream: _myStarStream.stream,
+            builder: (_, asynsnapshot) {
+              if (asynsnapshot.data.isEmpty) return Container();
+              Map<String, dynamic> body = asynsnapshot.data;
+              int accumStar = 0;
+              for (var index in body["starUsageHistory"]) {
+                accumStar = accumStar + index["starCount"];
               }
+              starCount = body["myStarCount"];
+              return Container(
+                color: colors["Light"],
+                child: ListView(
+                  physics: const ClampingScrollPhysics(),
+                  children: <Widget>[
+                    GenearMenu(
+                      maintext: AppLocalizations.of(context).translate("MyStars"),
+                      subtext: starCount.toString(),
+                      imgsrc: "images/icon_tip_normal.png",
+                      bar: false,
+                    ),
+                    GenearMenu(
+                      maintext: AppLocalizations.of(context).translate("EverStars"),
+                      subtext: body["everStarCount"].toString(),
+                      imgsrc: null,
+                      bar: false,
+                    ),
+                    GenearMenu(
+                      maintext: AppLocalizations.of(context).translate("DailyStars"),
+                      subtext: body["dailyStarCount"].toString(),
+                      imgsrc: "images/icon_question_blue_normal.png",
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => new InformDialog());
+                        // );
+                      },
+                      bar: false,
+                    ),
+                    GenearMenu(
+                      maintext: AppLocalizations.of(context).translate("MyAccumulatedVotes"),
+                      subtext: accumStar.toString(),
+                      // imgsrc: "images/icon_question_blue_normal.png",
+                      onTap: () => print("hi"),
+                      bar: false,
+                    ),
+                    // GenearMenu(
+                    //   maintext: AppLocalizations.of(context)
+                    //       .translate("Everstarcollectedtoday"),
+                    //   subtext: body["todayEverStarCount"].toString(),
+                    //   imgsrc: "images/icon_question_blue_normal.png",
+                    //   bar: true,
+                    // ),
+                    History(
+                      text: "Star Usage History",
+                      imgSrc: "images/icon_star_52x52_normal.png",
+                      list: body["starUsageHistory"],
+                      accum: false,
+                    ),
+                    History(
+                      text: "Star Accumulation History",
+                      imgSrc: "images/icon_star_52x52_normal.png",
+                      list: body["starEarnHistory"],
+                      accum: true,
+                    ),
+                  ],
+                ),
+              );
             },
           ),
           bottomNavigationBar: Visibility(

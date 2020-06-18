@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Component/Ranking.dart';
 import 'package:kpop/Object/GetList.dart';
+import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class GroupPage extends StatefulWidget {
   final sex;
@@ -11,8 +13,7 @@ class GroupPage extends StatefulWidget {
   _GroupPage createState() => _GroupPage();
 }
 
-class _GroupPage extends State<GroupPage>
-    with AutomaticKeepAliveClientMixin<GroupPage> {
+class _GroupPage extends State<GroupPage> with AutomaticKeepAliveClientMixin<GroupPage> {
   bool state;
   List<Color> rankingColor = [
     Color(0xAA0E151C),
@@ -29,14 +30,24 @@ class _GroupPage extends State<GroupPage>
   @override
   void initState() {
     state = true;
-    getList(api: "IF012", typeCode: "G", genderCode: "M").then((list) {
+    getList(
+      api: "IF012",
+      typeCode: "G",
+      genderCode: "M",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
+    ).then((list) {
       if (mounted)
         setState(() {
           _listBoy = list;
         });
       state = false;
     });
-    getList(api: "IF012", typeCode: "G", genderCode: "F").then((list) {
+    getList(
+      api: "IF012",
+      typeCode: "G",
+      genderCode: "F",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
+    ).then((list) {
       if (mounted)
         setState(() {
           _listGirl = list;
@@ -49,6 +60,7 @@ class _GroupPage extends State<GroupPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return state
@@ -57,15 +69,23 @@ class _GroupPage extends State<GroupPage>
           )
         : RefreshIndicator(
             onRefresh: () async {
-              getList(api: "IF012", typeCode: "G", genderCode: "M")
-                  .then((list) {
+              getList(
+                api: "IF012",
+                typeCode: "G",
+                genderCode: "M",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 if (mounted)
                   setState(() {
                     _listBoy = list;
                   });
               });
-              getList(api: "IF012", typeCode: "G", genderCode: "F")
-                  .then((list) {
+              getList(
+                api: "IF012",
+                typeCode: "G",
+                genderCode: "F",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 if (mounted)
                   setState(() {
                     _listGirl = list;
@@ -81,8 +101,7 @@ class _GroupPage extends State<GroupPage>
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
-                  itemCount:
-                      widget.sex == 0 ? _listBoy.length : _listGirl.length,
+                  itemCount: widget.sex == 0 ? _listBoy.length : _listGirl.length,
                   itemBuilder: (BuildContext context, int index) {
                     var _list;
                     if (widget.sex == 0)
@@ -111,9 +130,7 @@ class _GroupPage extends State<GroupPage>
                               starCount: _list[index]["starCount"],
                               ranking: _list[index]["rank"],
                               name: _list[index]["name"],
-                              color: index < 3
-                                  ? rankingColor[index]
-                                  : rankingColor[3],
+                              color: index < 3 ? rankingColor[index] : rankingColor[3],
                               profileImage: _list[index]['profileImage'],
                               singerUid: _list[index]["uid"].toString(),
                               callback: () async {
@@ -121,6 +138,7 @@ class _GroupPage extends State<GroupPage>
                                   api: "IF012",
                                   typeCode: "G",
                                   genderCode: widget.sex == 0 ? "M" : "F",
+                                  loginToken: Provider.of<LoginToken>(context).loginToken,
                                 ).then((list) {
                                   setState(() {
                                     if (widget.sex == 0)
@@ -135,9 +153,7 @@ class _GroupPage extends State<GroupPage>
                         ],
                       );
                     return Ranking(
-                      group: _list[index]["group"] == null
-                          ? ""
-                          : _list[index]["group"]["name"],
+                      group: _list[index]["group"] == null ? "" : _list[index]["group"]["name"],
                       starCount: _list[index]["starCount"],
                       ranking: _list[index]["rank"],
                       name: _list[index]["name"],
@@ -149,6 +165,7 @@ class _GroupPage extends State<GroupPage>
                           api: "IF012",
                           typeCode: "G",
                           genderCode: widget.sex == 0 ? "M" : "F",
+                          loginToken: Provider.of<LoginToken>(context).loginToken,
                         ).then((list) {
                           setState(
                             () {

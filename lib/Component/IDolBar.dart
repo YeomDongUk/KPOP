@@ -5,6 +5,7 @@ import 'package:kpop/Component/SingerInfo.dart';
 import 'package:kpop/Component/Vote.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class IDolBar extends StatefulWidget {
   final star;
@@ -71,9 +72,7 @@ class _IDolBarState extends State<IDolBar> {
                             style: TextStyle(color: Color(0xFF748192))),
                         TextSpan(text: "${widget.star['name']}  "),
                         TextSpan(
-                            text: widget.star["group"] != null
-                                ? widget.star["group"]["name"]
-                                : "",
+                            text: widget.star["group"] != null ? widget.star["group"]["name"] : "",
                             style: TextStyle(fontSize: 13)),
                       ],
                     ),
@@ -102,7 +101,8 @@ class _IDolBarState extends State<IDolBar> {
               child: GestureDetector(
                 child: Image.asset("images/icon_vote_select.png"),
                 onTap: () async {
-                  var res = await fetch("IF015", {'loginToken': loginToken});
+                  var res = await fetch("IF015",
+                      {'loginToken': Provider.of<LoginToken>(context, listen: false).loginToken});
                   var body = jsonDecode(res.body);
                   showDialog(
                     context: context,

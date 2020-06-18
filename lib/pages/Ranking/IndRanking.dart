@@ -3,6 +3,8 @@ import 'package:kpop/Color.dart';
 import 'package:kpop/Component/Ranking.dart';
 import 'package:kpop/Component/my_flutter_app_icons.dart';
 import 'package:kpop/Object/GetList.dart';
+import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class IndRanking extends StatefulWidget {
   final sex;
@@ -11,16 +13,14 @@ class IndRanking extends StatefulWidget {
   _IndRanking createState() => _IndRanking();
 }
 
-class _IndRanking extends State<IndRanking>
-    with AutomaticKeepAliveClientMixin<IndRanking> {
+class _IndRanking extends State<IndRanking> with AutomaticKeepAliveClientMixin<IndRanking> {
   bool state;
   bool select = true;
   bool isOpened = false;
   int month = 0;
   var _listBoy = [];
   var _listGirl = [];
-  var today =
-      "${DateTime.now().year}${DateTime.now().month}${DateTime.now().day - 1}";
+  var today = "${DateTime.now().year}${DateTime.now().month}${DateTime.now().day - 1}";
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _IndRanking extends State<IndRanking>
       genderCode: "M",
       month: 0,
       orderByCode: "DATE",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
     ).then((list) {
       setState(() {
         _listBoy = list;
@@ -43,6 +44,7 @@ class _IndRanking extends State<IndRanking>
       genderCode: "F",
       month: 0,
       orderByCode: "DATE",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
     ).then((list) {
       setState(() {
         _listGirl = list;
@@ -70,6 +72,7 @@ class _IndRanking extends State<IndRanking>
       genderCode: "M",
       month: month,
       orderByCode: "DATE",
+      loginToken: Provider.of<LoginToken>(context).loginToken,
     ).then((list) {
       print(list);
       setState(() {
@@ -82,6 +85,7 @@ class _IndRanking extends State<IndRanking>
       genderCode: "F",
       month: month,
       orderByCode: "DATE",
+      loginToken: Provider.of<LoginToken>(context).loginToken,
     ).then((list) {
       print(list);
       setState(() {
@@ -107,6 +111,7 @@ class _IndRanking extends State<IndRanking>
                 genderCode: "M",
                 month: month,
                 orderByCode: select ? "DATE" : "VOTE",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
               ).then((list) {
                 setState(() {
                   _listBoy = list;
@@ -118,6 +123,7 @@ class _IndRanking extends State<IndRanking>
                 genderCode: "F",
                 month: month,
                 orderByCode: select ? "DATE" : "VOTE",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
               ).then((list) {
                 setState(() {
                   _listGirl = list;
@@ -147,8 +153,7 @@ class _IndRanking extends State<IndRanking>
                                   heroTag: "Ind${index}",
                                   onPressed: () => setMonth(index),
                                   child: Text(
-                                    months[check(DateTime.now().month - index) -
-                                        1],
+                                    months[check(DateTime.now().month - index) - 1],
                                     style: TextStyle(color: colors["Main"]),
                                   ),
                                   elevation: 0,
@@ -181,8 +186,7 @@ class _IndRanking extends State<IndRanking>
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const ClampingScrollPhysics(),
-                      itemCount:
-                          widget.sex == 0 ? _listBoy.length : _listGirl.length,
+                      itemCount: widget.sex == 0 ? _listBoy.length : _listGirl.length,
                       itemBuilder: (BuildContext context, int index) {
                         var _list;
                         if (widget.sex == 0)
@@ -200,8 +204,7 @@ class _IndRanking extends State<IndRanking>
                                     alignment: Alignment.centerRight,
                                     padding: EdgeInsets.only(right: 15),
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
                                         GestureDetector(
@@ -216,17 +219,13 @@ class _IndRanking extends State<IndRanking>
                                                 color: colors["Black"],
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
-                                                  color: select
-                                                      ? colors["Main"]
-                                                      : colors["White"],
+                                                  color: select ? colors["Main"] : colors["White"],
                                                 ),
                                               ),
                                               padding: EdgeInsets.all(1.5),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  color: select
-                                                      ? colors["Main"]
-                                                      : colors["White"],
+                                                  color: select ? colors["Main"] : colors["White"],
                                                   shape: BoxShape.circle,
                                                 ),
                                               ),
@@ -240,6 +239,8 @@ class _IndRanking extends State<IndRanking>
                                                 genderCode: "M",
                                                 month: month,
                                                 orderByCode: "DATE",
+                                                loginToken:
+                                                    Provider.of<LoginToken>(context).loginToken,
                                               ).then((list) {
                                                 setState(() {
                                                   select = true;
@@ -252,6 +253,8 @@ class _IndRanking extends State<IndRanking>
                                                 genderCode: "F",
                                                 month: month,
                                                 orderByCode: "DATE",
+                                                loginToken:
+                                                    Provider.of<LoginToken>(context).loginToken,
                                               ).then((list) {
                                                 setState(() {
                                                   select = true;
@@ -278,17 +281,13 @@ class _IndRanking extends State<IndRanking>
                                                 color: colors["Black"],
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
-                                                  color: !select
-                                                      ? colors["Main"]
-                                                      : colors["White"],
+                                                  color: !select ? colors["Main"] : colors["White"],
                                                 ),
                                               ),
                                               padding: EdgeInsets.all(1.5),
                                               child: Container(
                                                 decoration: BoxDecoration(
-                                                  color: !select
-                                                      ? colors["Main"]
-                                                      : colors["White"],
+                                                  color: !select ? colors["Main"] : colors["White"],
                                                   shape: BoxShape.circle,
                                                 ),
                                               ),
@@ -302,6 +301,8 @@ class _IndRanking extends State<IndRanking>
                                                 genderCode: "M",
                                                 month: month,
                                                 orderByCode: "VOTE",
+                                                loginToken:
+                                                    Provider.of<LoginToken>(context).loginToken,
                                               ).then((list) {
                                                 setState(() {
                                                   select = false;
@@ -315,6 +316,8 @@ class _IndRanking extends State<IndRanking>
                                                 genderCode: "F",
                                                 month: month,
                                                 orderByCode: "VOTE",
+                                                loginToken:
+                                                    Provider.of<LoginToken>(context).loginToken,
                                               ).then((list) {
                                                 setState(() {
                                                   select = false;
@@ -337,8 +340,7 @@ class _IndRanking extends State<IndRanking>
                                     width: width,
                                     child: FittedBox(
                                       fit: BoxFit.cover,
-                                      child: Image.network(
-                                          _list[index]['bannerImage']),
+                                      child: Image.network(_list[index]['bannerImage']),
                                     ),
                                   ),
                                 ],
@@ -353,9 +355,7 @@ class _IndRanking extends State<IndRanking>
                                   starCount: _list[index]['startCount'],
                                   ranking: 1,
                                   name: _list[index]["name"],
-                                  color: index < 3
-                                      ? rankingColor[index]
-                                      : rankingColor[3],
+                                  color: index < 3 ? rankingColor[index] : rankingColor[3],
                                   profileImage: _list[index]['profileImage'],
                                   date: _list[index]['hofDt'],
                                   singerUid: _list[index]["uid"].toString(),
@@ -366,6 +366,7 @@ class _IndRanking extends State<IndRanking>
                                       genderCode: widget.sex == 0 ? "M" : "F",
                                       month: 0,
                                       orderByCode: select ? "DATE" : "VOTE",
+                                      loginToken: Provider.of<LoginToken>(context).loginToken,
                                     ).then((list) {
                                       setState(() {
                                         _listGirl = list;
@@ -377,14 +378,11 @@ class _IndRanking extends State<IndRanking>
                             ],
                           );
                         return Ranking(
-                          group: _list[index]["group"] == null
-                              ? ""
-                              : _list[index]["group"]["name"],
+                          group: _list[index]["group"] == null ? "" : _list[index]["group"]["name"],
                           starCount: _list[index]['startCount'],
                           ranking: 1,
                           name: _list[index]["name"],
-                          color:
-                              index < 3 ? rankingColor[index] : rankingColor[3],
+                          color: index < 3 ? rankingColor[index] : rankingColor[3],
                           profileImage: _list[index]['profileImage'],
                           date: _list[index]['hofDt'],
                           singerUid: _list[index]["uid"].toString(),
@@ -395,6 +393,7 @@ class _IndRanking extends State<IndRanking>
                               genderCode: widget.sex == 0 ? "M" : "F",
                               month: 0,
                               orderByCode: select ? "DATE" : "VOTE",
+                              loginToken: Provider.of<LoginToken>(context).loginToken,
                             ).then((list) {
                               setState(() {
                                 _listGirl = list;

@@ -1,19 +1,13 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:kpop/Component/Body.dart';
 import 'package:kpop/Color.dart';
 import 'package:kpop/Component/HamberNav.dart';
-import 'package:kpop/Object/Http.dart';
-import 'package:kpop/Object/LoginToken.dart';
-import 'package:kpop/Object/RewardState.dart';
 import 'package:kpop/Object/User.dart' as UserProfile;
 import 'package:kpop/Object/app_localizations.dart';
 import 'package:kpop/pages/LoginPage/LoginPage.dart';
 import 'package:kpop/pages/MystarsPage.dart';
-import '../Object/RewardState.dart';
 
 class MainPage extends StatefulWidget {
   final user;
@@ -98,11 +92,11 @@ class _MainPage extends State<MainPage>
           targetingInfo: targetingInfo,
         )
         .catchError((e) => print("error:$e"));
-
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(title ?? "Hi"),

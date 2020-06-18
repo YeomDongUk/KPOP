@@ -11,6 +11,7 @@ import 'package:kpop/Component/SetFavorite.dart';
 import 'package:kpop/Object/Http.dart';
 import 'package:kpop/Object/LoginToken.dart';
 import 'package:kpop/Object/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 // import
 
@@ -19,10 +20,9 @@ class AngelPage extends StatefulWidget {
   _AngelPageState createState() => _AngelPageState();
 }
 
-class _AngelPageState extends State<AngelPage>
-    with AutomaticKeepAliveClientMixin<AngelPage> {
+class _AngelPageState extends State<AngelPage> with AutomaticKeepAliveClientMixin<AngelPage> {
   Map<String, dynamic> angel;
-
+  String loginToken;
   Future initialize;
   List favorite;
   List groupBoy = [];
@@ -81,8 +81,7 @@ class _AngelPageState extends State<AngelPage>
 
   setAngel(Map<String, dynamic> star) async {
     print("setAngel");
-    final res = await fetch(
-        "IF006", {'singerUid': star['uid'], 'loginToken': loginToken});
+    final res = await fetch("IF006", {'singerUid': star['uid'], 'loginToken': loginToken});
     var body = jsonDecode(res.body);
     print(body);
 
@@ -98,8 +97,7 @@ class _AngelPageState extends State<AngelPage>
     var genderCode = star['genderCode'];
     List list;
     print("$typeCode $genderCode");
-    final res = await fetch(
-        "IF008", {'singerUid': star['uid'], 'loginToken': loginToken});
+    final res = await fetch("IF008", {'singerUid': star['uid'], 'loginToken': loginToken});
     var body = jsonDecode(res.body);
     print(body);
     if (body["success"]) {
@@ -144,8 +142,7 @@ class _AngelPageState extends State<AngelPage>
   }
 
   findForDelete(List list, Map<String, dynamic> star) async {
-    final res = await fetch(
-        "IF025", {"singerUid": star['uid'], "loginToken": loginToken});
+    final res = await fetch("IF025", {"singerUid": star['uid'], "loginToken": loginToken});
     var body = jsonDecode(res.body);
     print(body);
     if (body["success"])
@@ -158,8 +155,7 @@ class _AngelPageState extends State<AngelPage>
   }
 
   deleteAngel(Map<String, dynamic> star) async {
-    final res = await fetch(
-        "IF024", {'singerUid': star['uid'], 'loginToken': loginToken});
+    final res = await fetch("IF024", {'singerUid': star['uid'], 'loginToken': loginToken});
     var body = jsonDecode(res.body);
     if (body["success"]) {
       this.angel = null;
@@ -177,11 +173,13 @@ class _AngelPageState extends State<AngelPage>
   @override
   void initState() {
     super.initState();
+    loginToken = Provider.of<LoginToken>(context, listen: false).loginToken;
     initialize = getAllList();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
 

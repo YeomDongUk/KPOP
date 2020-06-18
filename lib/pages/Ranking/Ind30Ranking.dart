@@ -3,6 +3,8 @@ import 'package:kpop/Color.dart';
 import 'package:kpop/Component/Ranking.dart';
 import 'package:kpop/Object/GetList.dart';
 import 'package:kpop/Object/Http.dart';
+import 'package:kpop/Object/LoginToken.dart';
+import 'package:provider/provider.dart';
 
 class Ind30Ranking extends StatefulWidget {
   final sex;
@@ -11,8 +13,7 @@ class Ind30Ranking extends StatefulWidget {
   _Ind30Ranking createState() => _Ind30Ranking();
 }
 
-class _Ind30Ranking extends State<Ind30Ranking>
-    with AutomaticKeepAliveClientMixin<Ind30Ranking> {
+class _Ind30Ranking extends State<Ind30Ranking> with AutomaticKeepAliveClientMixin<Ind30Ranking> {
   bool state;
   bool select = true;
   List<Color> rankingColor = [
@@ -25,9 +26,8 @@ class _Ind30Ranking extends State<Ind30Ranking>
   var _listGirl = [];
   @override
   bool get wantKeepAlive => true;
-  var monthAgo = new DateTime(
-          DateTime.now().year, DateTime.now().month - 1, DateTime.now().day)
-      .toString();
+  var monthAgo =
+      new DateTime(DateTime.now().year, DateTime.now().month - 1, DateTime.now().day).toString();
   @override
   void initState() {
     state = true;
@@ -35,6 +35,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
       api: "IF013",
       typeCode: "I",
       genderCode: "M",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
     ).then((list) {
       setState(() {
         _listBoy = list;
@@ -45,6 +46,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
       api: "IF013",
       typeCode: "I",
       genderCode: "F",
+      loginToken: Provider.of<LoginToken>(context, listen: false).loginToken,
     ).then((list) {
       setState(() {
         _listGirl = list;
@@ -66,14 +68,22 @@ class _Ind30Ranking extends State<Ind30Ranking>
           )
         : RefreshIndicator(
             onRefresh: () async {
-              getMonthList(api: "IF013", typeCode: "I", genderCode: "M")
-                  .then((list) {
+              getMonthList(
+                api: "IF013",
+                typeCode: "I",
+                genderCode: "M",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 setState(() {
                   _listBoy = list;
                 });
               });
-              getList(api: "IF013", typeCode: "I", genderCode: "F")
-                  .then((list) {
+              getList(
+                api: "IF013",
+                typeCode: "I",
+                genderCode: "F",
+                loginToken: Provider.of<LoginToken>(context).loginToken,
+              ).then((list) {
                 setState(() {
                   _listGirl = list;
                 });
@@ -88,8 +98,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: const ClampingScrollPhysics(),
-                  itemCount:
-                      widget.sex == 0 ? _listBoy.length : _listGirl.length,
+                  itemCount: widget.sex == 0 ? _listBoy.length : _listGirl.length,
                   itemBuilder: (BuildContext context, int index) {
                     var _list;
                     if (widget.sex == 0)
@@ -126,8 +135,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                                 width: width,
                                 child: FittedBox(
                                   fit: BoxFit.cover,
-                                  child: Image.network(
-                                      _list[index]['bannerImage']),
+                                  child: Image.network(_list[index]['bannerImage']),
                                 ),
                               ),
                             ],
@@ -142,9 +150,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                               starCount: _list[index]['startCount'],
                               ranking: _list[index]["rank"],
                               name: _list[index]["name"],
-                              color: index < 3
-                                  ? rankingColor[index]
-                                  : rankingColor[3],
+                              color: index < 3 ? rankingColor[index] : rankingColor[3],
                               profileImage: _list[index]['profileImage'],
                               singerUid: _list[index]["uid"],
                               callback: () async {
@@ -152,6 +158,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                                   api: "IF013",
                                   typeCode: "I",
                                   genderCode: widget.sex == 0 ? "M" : "F",
+                                  loginToken: Provider.of<LoginToken>(context).loginToken,
                                 ).then((list) {
                                   setState(() {
                                     _listBoy = list;
@@ -163,9 +170,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                         ],
                       );
                     return Ranking(
-                      group: _list[index]["group"] == null
-                          ? ""
-                          : _list[index]["group"]["name"],
+                      group: _list[index]["group"] == null ? "" : _list[index]["group"]["name"],
                       starCount: _list[index]['startCount'],
                       ranking: _list[index]["rank"],
                       name: _list[index]["name"],
@@ -177,6 +182,7 @@ class _Ind30Ranking extends State<Ind30Ranking>
                           api: "IF013",
                           typeCode: "I",
                           genderCode: widget.sex == 0 ? "M" : "F",
+                          loginToken: Provider.of<LoginToken>(context).loginToken,
                         ).then((list) {
                           setState(() {
                             _listBoy = list;

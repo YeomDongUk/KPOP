@@ -5,11 +5,12 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:kpop/Color.dart';
 import 'package:kpop/Object/Http.dart';
-import 'package:kpop/Object/LoginToken.dart' as Login;
+import 'package:kpop/Object/LoginToken.dart';
 import 'package:kpop/Object/Navigate.dart';
 import 'package:kpop/Object/UserInform.dart';
 import 'package:kpop/pages/LoginPage/AdditionalPage.dart';
 import 'package:kpop/pages/MainPage.dart';
+import 'package:provider/provider.dart';
 
 class InstaLoginPage extends StatefulWidget {
   @override
@@ -29,8 +30,7 @@ class _InstaLoginPageState extends State<InstaLoginPage> {
       if (url.indexOf("?code=") != -1) {
         var code = url.split("=")[1];
         flutterWebviewPlugin.close();
-        var respones = await http
-            .post("https://api.instagram.com/oauth/access_token", body: {
+        var respones = await http.post("https://api.instagram.com/oauth/access_token", body: {
           "client_id": "95ba65817deb4d1c9a62faed67c7ce35",
           "redirect_uri": "http://58.229.184.156:9070/",
           "client_secret": "6ea246a434da4637852ab19c20dcd68f",
@@ -38,12 +38,11 @@ class _InstaLoginPageState extends State<InstaLoginPage> {
           "grant_type": "authorization_code"
         });
         var user = jsonDecode(respones.body)['user'];
-        var res = await fetch(
-            "IF002", {'registTypeCode': "INSTAGRAM", 'id': user["id"]});
+        var res = await fetch("IF002", {'registTypeCode': "INSTAGRAM", 'id': user["id"]});
         var result = jsonDecode(res.body);
         if (result["success"]) {
           print(result["userInfo"]);
-          Login.tokenSave(result["loginToken"]);
+          Provider.of<LoginToken>(context, listen: false).tokenSave(result["loginToken"]);
           navigateReplace(context, MainPage(user: result["userInfo"]));
         } else {
           var userInform = UserInform(

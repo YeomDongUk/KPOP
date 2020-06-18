@@ -9,6 +9,7 @@ import 'package:kpop/Object/UserInform.dart';
 import 'dart:convert';
 import 'package:kpop/Object/app_localizations.dart';
 import 'package:kpop/pages/MainPage.dart';
+import 'package:provider/provider.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -25,25 +26,32 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController _recoController;
 
   signUp(context) async {
-    userInform.id = _emailController.text;
-    userInform.password = _pwController.text;
-    userInform.nickname = _nicNameController.text;
-    userInform.recomMemberNickname = _recoController.text;
-    userInform.registTypeCode = "EMAIL";
-    userInform.platformTypeCode = Platform.isAndroid ? "Android" : "IOS";
-    var res = await fetch(
-      "IF001",
-      userInform.toJson(),
-    );
-    var body = jsonDecode(res.body);
-    var token = body["loginToken"];
-    if (body['success'] == true) {
-      res = await fetch("IF003", {"loginToken": token});
-      body = jsonDecode(res.body);
-      if (body['success']) {
-        await tokenSave(token);
-        navigateReplace(context, MainPage(user: body["userInfo"]));
+    try {
+      userInform.id = _emailController.text;
+      userInform.password = _pwController.text;
+      userInform.nickname = _nicNameController.text;
+      userInform.recomMemberNickname = _recoController.text;
+      userInform.registTypeCode = "EMAIL";
+      userInform.platformTypeCode = Platform.isAndroid ? "Android" : "IOS";
+      var res = await fetch(
+        "IF001",
+        userInform.toJson(),
+      );
+
+      var body = jsonDecode(res.body);
+      var token = body["loginToken"];
+      print(body);
+      if (body['success'] == true) {
+        res = await fetch("IF003", {"loginToken": token});
+        body = jsonDecode(res.body);
+        if (body['success']) {
+          Provider.of<LoginToken>(context, listen: false).tokenSave(token);
+
+          navigateReplace(context, MainPage(user: body["userInfo"]));
+        }
       }
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -77,7 +85,6 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _emailController.dispose();
     _pwController.dispose();
     _nicNameController.dispose();
