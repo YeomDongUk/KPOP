@@ -10,9 +10,8 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final UserRepository userRepository;
 
   FavoriteBloc({@required this.userRepository})
-      : assert(userRepository != null);
-  @override
-  FavoriteInitial get initialState => FavoriteInitial();
+      : assert(userRepository != null),
+        super(FavoriteInitial());
 
   @override
   Stream<FavoriteState> mapEventToState(

@@ -7,9 +7,9 @@ import 'package:kpop/repository/user_repository.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserRepository userRepository;
 
-  AuthBloc({@required this.userRepository}) : assert(userRepository != null);
-  @override
-  AuthInitial get initialState => AuthInitial();
+  AuthBloc({@required this.userRepository})
+      : assert(userRepository != null),
+        super(AuthInitial());
 
   @override
   Stream<AuthState> mapEventToState(

@@ -14,9 +14,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     @required this.userRepository,
     @required this.authenticationBloc,
   })  : assert(userRepository != null),
-        assert(authenticationBloc != null);
-
-  LoginState get initialState => LoginInitial();
+        assert(authenticationBloc != null),
+        super(LoginInitial());
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
@@ -28,6 +27,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           id: event.id,
           password: event.password,
         );
+        print(map);
         if (map == null) {
           throw Exception("아이디 또는 비밀번호가 틀렸습니다.");
         }

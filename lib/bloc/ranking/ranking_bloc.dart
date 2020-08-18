@@ -10,9 +10,9 @@ class RankingBloc extends Bloc<RankingEvent, RankingState> {
   final UserRepository userRepository;
   RankingRepository rankingRepository = RankingRepository();
 
-  RankingBloc({@required this.userRepository}) : assert(userRepository != null);
-  @override
-  RankingInitial get initialState => RankingInitial();
+  RankingBloc({@required this.userRepository})
+      : assert(userRepository != null),
+        super(RankingInitial());
 
   @override
   Stream<RankingState> mapEventToState(

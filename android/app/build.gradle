@@ -41,8 +41,8 @@ android {
         applicationId "com.hanbando.kpop"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1010100
+        versionName "1.1.1"
     }
 
     buildTypes {

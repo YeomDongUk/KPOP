@@ -34,6 +34,7 @@ class Api {
           "pushToken": null
         },
       );
+      print(response.data);
       if (response.statusCode == 200) {
         if (response.data['success']) {
           return {
@@ -48,6 +49,7 @@ class Api {
         throw Exception(response.statusMessage);
       }
     } catch (error) {
+      print("IF002: $error");
       return null;
     }
   }

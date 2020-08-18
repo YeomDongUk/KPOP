@@ -9,9 +9,9 @@ import 'package:kpop/repository/user_repository.dart';
 class AngelBloc extends Bloc<AngelEvent, AngelState> {
   final UserRepository userRepository;
 
-  AngelBloc({@required this.userRepository}) : assert(userRepository != null);
-  @override
-  AngelInitial get initialState => AngelInitial();
+  AngelBloc({@required this.userRepository})
+      : assert(userRepository != null),
+        super(AngelInitial());
 
   @override
   Stream<AngelState> mapEventToState(

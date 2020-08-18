@@ -9,9 +9,9 @@ import 'package:kpop/repository/user_repository.dart';
 class StarsBloc extends Bloc<StarsEvent, StarsState> {
   final UserRepository userRepository;
 
-  StarsBloc({@required this.userRepository}) : assert(userRepository != null);
-  @override
-  StarsInitial get initialState => StarsInitial();
+  StarsBloc({@required this.userRepository})
+      : assert(userRepository != null),
+        super(StarsInitial());
 
   @override
   Stream<StarsState> mapEventToState(

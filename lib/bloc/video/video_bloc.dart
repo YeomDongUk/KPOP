@@ -10,10 +10,8 @@ class VideoBloc extends Bloc<VideoEvent, VideoState> {
   final YoutubeApi youtubeApi = YoutubeApi();
   final String query;
   String _nextPageToken;
-  VideoBloc({this.query});
 
-  @override
-  get initialState => VideoInitial();
+  VideoBloc({this.query}) : super(VideoInitial());
 
   @override
   Stream<Transition<VideoEvent, VideoState>> transformEvents(

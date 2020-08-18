@@ -9,7 +9,7 @@ class YoutubeApi {
     receiveTimeout: 3000,
   );
   static Dio _dio = Dio(_baseOptions);
-  final String key = "AIzaSyDXf0QJIi2WUdt7N6s7WC7nf7BN4iq-IbM";
+  final String key = "AIzaSyChZAIr8W3fJzrBq-sNMGZ2N583nRXVpC4";
 
   Future<Map<String, dynamic>> search({
     @required String query,

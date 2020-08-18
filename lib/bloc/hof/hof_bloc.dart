@@ -10,9 +10,9 @@ class HofBloc extends Bloc<HofEvent, HofState> {
   final UserRepository userRepository;
   HofRepository _hofRepository = HofRepository();
 
-  HofBloc({@required this.userRepository}) : assert(userRepository != null);
-  @override
-  HofInitial get initialState => HofInitial();
+  HofBloc({@required this.userRepository})
+      : assert(userRepository != null),
+        super(HofInitial());
 
   @override
   Stream<HofState> mapEventToState(
